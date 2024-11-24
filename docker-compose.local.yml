@@ -1,0 +1,74 @@
+name: dealer-service
+services:
+  webservice:
+    depends_on:
+      database:
+        condition: service_healthy
+    image: platform/dealer-service:local
+    pull_policy: never
+    hostname: dealer-service.local
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_VERSION: build.local
+        BUILD_NUMBER: build.local
+      target: local
+    ports:
+      - "10101:8000"
+      - "9229:9229"
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+        bind:
+          create_host_path: true
+      - npm-cache-volume:/root/.npm
+      - $HOME/.aws:/home/dev/.aws
+      - $HOME/.aws:/.aws
+    networks:
+      - mobials
+    command: /bin/sh -c "npm install && npm run start:debug"
+
+  database:
+    container_name: dealer-database
+    image: postgres:15.3-alpine
+    environment:
+      POSTGRES_PASSWORD: passwd
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-database-volume:/var/lib/postgresql/data
+      - ./conf/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - mobials
+
+  adminer:
+    image: adminer
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - mobials
+
+volumes:
+  # shared composer cache volume
+  npm-cache-volume:
+    name: platform-npm-cache
+    external: true
+  database-database-volume:
+    name: dealer-database
+
+networks:
+  # shared network
+  mobials:
+    name: mobials
+    external: true
