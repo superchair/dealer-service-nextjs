@@ -2,8 +2,8 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { JwksClient } from "jwks-rsa";
 import { verify } from "jsonwebtoken";
 import { Reflector } from "@nestjs/core";
-import { configDotenv } from "dotenv";
 import { Auth0 } from "./auth0.decorator";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class Auth0Guard implements CanActivate {
@@ -13,13 +13,13 @@ export class Auth0Guard implements CanActivate {
 
   constructor(
     private readonly reflector: Reflector,
+    private readonly configService: ConfigService
   ) {
     console.log('Auth0Guard constructor')
 
     // Load environment variables
-    configDotenv()
-    this.issuer = process.env.AUTH0_ISSUER!
-    this.audience = process.env.AUTH0_AUDIENCE!
+    this.issuer = this.configService.get<string>('AUTH0_ISSUER')!
+    this.audience = this.configService.get<string>('AUTH0_AUDIENCE')!
     const jwksUri: string = new URL('.well-known/jwks.json', this.issuer).href
 
     this.jwksRsaClient = new JwksClient({

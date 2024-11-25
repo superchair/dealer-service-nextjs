@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,7 +23,12 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);
 
+  const configService = app.get(ConfigService)
+  const port = configService.get<number>('APP_PORT')
+
   // start app
-  await app.listen(process.env.PORT ?? 8000);
+  await app.listen(port);
+
+  console.log(`Application is running on: ${port}`);
 }
 bootstrap();

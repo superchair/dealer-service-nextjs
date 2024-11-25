@@ -1,26 +1,32 @@
 import { Module } from '@nestjs/common';
 import { DealersModule } from './dealers/dealers.module';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dealer } from './dealers/entity/dealer';
-
-const typeOrmConfig: TypeOrmModuleOptions = {
-  type: 'postgres',
-  host: 'database',
-  port: 5432,
-  username: 'postgres',
-  password: 'passwd',
-  database: 'postgres',
-  schema: 'dealer_service',
-  entities: [
-    Dealer
-  ],
-  synchronize: true,
-  logging: true
-}
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmConfig),
+    ConfigModule.forRoot({ isGlobal: true, validate }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_DATABASE'),
+          schema: configService.get<string>('DB_SCHEMA'),
+          entities: [
+            Dealer
+          ],
+          synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? false,
+          logging: configService.get<boolean>('DB_LOGGING') ?? false
+        }
+      }
+    }),
     DealersModule
   ],
   controllers: [],
