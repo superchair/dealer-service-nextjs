@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dealer } from './dealers/entity/dealer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/env.validation';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { validate } from './config/env.validation';
         }
       }
     }),
-    DealersModule
+    AuthModule,
+    DealersModule,
   ],
   controllers: [],
   providers: [],

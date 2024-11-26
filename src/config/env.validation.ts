@@ -1,6 +1,5 @@
 import { plainToInstance } from "class-transformer"
 import { IsNotEmpty, IsNumber, IsString, validateSync } from "class-validator"
-import { skip } from "node:test"
 
 class EnvironmentVariables {
   @IsNotEmpty()
