@@ -2,14 +2,19 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 import { DealersService } from './dealers.service';
 import { DealerDto } from './dto/dealer.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Auth0 } from 'src/auth/guard/authentication.guard';
-import { Auth0Scopes } from 'src/auth/decorators/auth0-scopes';
+import { Auth0 } from '../auth/guard/authentication.guard';
+import { Auth0Scopes } from '../auth/decorators/auth0-scopes';
 
 @UseGuards(Auth0)
 @Controller('dealers')
 @ApiBearerAuth()
 export class DealersController {
   constructor(private readonly dealersService: DealersService) {}
+
+  @Get('ping')
+  async getPing() {
+    return "pong"
+  }
 
   @Get()
   @Auth0Scopes(['dealer-service:read'])

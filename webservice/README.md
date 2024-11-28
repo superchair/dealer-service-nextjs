@@ -71,6 +71,24 @@ $ mau deploy
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
+## Database
+
+### Generate Migration Based on Entity Changes
+
+```bash
+$ npm run typeorm migration:generate -- -d src/config/typeorm-cli-config.ts src/db/migrations/<migration-name>
+```
+
+### Run and Revert Migration
+
+```bash
+$ npm run typeorm migration:run-- -d src/config/typeorm-cli-config.ts
+```
+
+```bash
+$ npm run typeorm migration:revert -- -d src/config/typeorm-cli-config.ts
+```
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
