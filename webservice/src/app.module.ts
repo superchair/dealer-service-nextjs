@@ -1,14 +1,21 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { DealersModule } from './dealers/dealers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dealer } from './dealers/entity/dealer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { AuthModule } from './auth/auth.module';
+import { ServiceUtilitiesModule } from './service-utilities/service-utilities.module';
+import { InfoService } from './service-utilities/info.service';
+import constConfig from './config/env.const';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, validate }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+      load: [constConfig]
+    }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -30,8 +37,9 @@ import { AuthModule } from './auth/auth.module';
     }),
     AuthModule,
     DealersModule,
+    ServiceUtilitiesModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [Logger, InfoService],
 })
 export class AppModule {}

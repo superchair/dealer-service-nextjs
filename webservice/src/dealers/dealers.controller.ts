@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { DealersService } from './dealers.service';
 import { DealerDto } from './dto/dealer.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -6,14 +6,16 @@ import { Auth0 } from '../auth/guard/authentication.guard';
 import { Auth0Scopes } from '../auth/decorators/auth0-scopes';
 
 @UseGuards(Auth0)
-@Controller('dealers')
+@Controller({
+  path: 'dealers',
+  version: '1'
+})
 @ApiBearerAuth()
 export class DealersController {
-  constructor(private readonly dealersService: DealersService) {}
-
-  @Get('ping')
-  async getPing() {
-    return "pong"
+  private readonly logger: Logger = new Logger(DealersController.name)
+  constructor(
+    private readonly dealersService: DealersService,
+  ) {
   }
 
   @Get()

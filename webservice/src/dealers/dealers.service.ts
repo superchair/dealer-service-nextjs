@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { Dealer } from './entity/dealer';
 import { DealerDto } from './dto/dealer.dto';
 import { Repository } from 'typeorm';
@@ -6,12 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class DealersService {
+  private readonly logger: Logger = new Logger(DealersService.name)
 
   constructor(
-    @InjectRepository(Dealer) private readonly dealerRepository: Repository<Dealer>
+    @InjectRepository(Dealer) private readonly dealerRepository: Repository<Dealer>,
   ) {}
 
   async getDealers(): Promise<Array<Dealer>> {
+    this.logger.debug('getDealers')
     return this.dealerRepository.find()
   }
 
