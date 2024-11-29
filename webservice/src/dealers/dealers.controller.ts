@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, ParseUUIDPipe, Post, Put, UseGuards, ValidationPipe } from '@nestjs/common';
 import { DealersService } from './dealers.service';
 import { DealerDto } from './dto/dealer.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -25,22 +25,31 @@ export class DealersController {
   }
 
   @Get('/:dealerId')
-  async getDealerById(@Param('dealerId') dealerId: string) {
+  async getDealerById(
+    @Param('dealerId', new ParseUUIDPipe) dealerId: string
+  ) {
     return await this.dealersService.getDealerById(dealerId)
   }
 
   @Post()
-  async createDealer(@Body() newDealer: DealerDto) {
+  async createDealer(
+    @Body(new ValidationPipe) newDealer: DealerDto
+  ) {
     return await this.dealersService.createDealer(newDealer)
   }
 
   @Put('/:dealerId')
-  async updateDealer(@Body() updatedDealer: DealerDto, @Param('dealerId') dealerId: string) {
+  async updateDealer(
+    @Body(new ValidationPipe) updatedDealer: DealerDto,
+    @Param('dealerId', new ParseUUIDPipe) dealerId: string
+  ) {
     return await this.dealersService.updateDealer(dealerId, updatedDealer)
   }
 
   @Delete('/:dealerId')
-  async deleteDealer(@Param('dealerId') dealerId: string) {
+  async deleteDealer(
+    @Param('dealerId', new ParseUUIDPipe) dealerId: string
+  ) {
     return await this.dealersService.deleteDealer(dealerId)
   }
 }
