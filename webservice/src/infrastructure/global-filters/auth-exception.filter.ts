@@ -6,6 +6,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import StdErrResponseDto from '../dto/stderr.response.dto';
 
 @Catch(UnauthorizedException, ForbiddenException)
 export class AuthExceptionFilter implements ExceptionFilter {
@@ -22,7 +23,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
     const httpStatus: number = exception instanceof ForbiddenException ? 403 : 401
 
-    const responseBody = {
+    const responseBody: StdErrResponseDto = {
       statusCode: status,
       timestamp: new Date().toISOString(),
       message: exception.message,

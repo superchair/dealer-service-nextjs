@@ -8,11 +8,14 @@ import { AuthExceptionFilter } from './infrastructure/global-filters/auth-except
 import { VersioningType } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { loggerFactory } from './infrastructure/logger/winston.logger';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true
   });
+
+  app.use(helmet())
 
   // swagger configuration
   const config = new DocumentBuilder()

@@ -1,19 +1,16 @@
-import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Dealer } from './entity/dealer';
-import { DealerDto } from './dto/dealer.dto';
+import { DealerInputDto, DealerOutputDto } from './dto/dealer.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class DealersService {
-  private readonly logger: Logger = new Logger(DealersService.name)
-
   constructor(
     @InjectRepository(Dealer) private readonly dealerRepository: Repository<Dealer>,
   ) {}
 
   async getDealers(): Promise<Array<Dealer>> {
-    this.logger.debug('getDealers')
     return this.dealerRepository.find()
   }
 
@@ -31,12 +28,14 @@ export class DealersService {
     return dealer
   }
 
-  async createDealer(newDealer: DealerDto): Promise<void> {
-    await this.dealerRepository.save(newDealer)
+  async createDealer(newDealer: DealerInputDto): Promise<DealerOutputDto> {
+    const dealerOutputDto: DealerOutputDto = await this.dealerRepository.save(newDealer)
+    return dealerOutputDto
   }
 
-  async updateDealer(id: string, updatedDealer: DealerDto): Promise<void> {
+  async updateDealer(id: string, updatedDealer: DealerInputDto): Promise<DealerOutputDto> {
     await this.dealerRepository.update(id, updatedDealer)
+    return new DealerOutputDto(DealerInputDto)
   }
 
   async deleteDealer(id: string): Promise<void> {
