@@ -7,6 +7,7 @@ import { validate } from './config/env.validation';
 import constConfig from './config/env.const';
 import { ServiceUtilitiesModule } from '@platform/service-utilities';
 import { AuthenticationModule } from '@dealer-service/authentication';
+import { KafkaExampleModule } from './kafka-example/kafka-example.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { AuthenticationModule } from '@dealer-service/authentication';
     }),
     AuthenticationModule,
     DealersModule,
-    ServiceUtilitiesModule
+    ServiceUtilitiesModule,
+    KafkaExampleModule
   ],
   controllers: [],
   providers: [Logger],

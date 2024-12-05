@@ -7,6 +7,7 @@ import { Auth0 } from '@dealer-service/authentication/guard/authentication.guard
 import { Auth0Scopes } from '@dealer-service/authentication/decorators/auth0-scopes';
 
 @UseGuards(Auth0)
+@ApiBearerAuth()
 @ApiUnauthorizedResponse({
   description: 'Unauthorized',
   type: StdErrResponseDto
@@ -22,7 +23,6 @@ import { Auth0Scopes } from '@dealer-service/authentication/decorators/auth0-sco
   path: 'dealers',
   version: '1'
 })
-@ApiBearerAuth()
 export class DealersController {
   constructor(
     private readonly dealersService: DealersService
